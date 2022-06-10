@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "GILROY";
+  src: url("./assets/fonts/GILROY-REGULAR.TTF") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-LIGHT.TTF') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-SEMIBOLD.TTF') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-THIN.TTF') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-REGULARITALIC.TTF') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-MEDIUMITALIC.TTF') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-THINITALIC.TTF') format('truetype');
+  font-weight: 200;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-EXTRABOLDITALIC.TTF') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'GILROY';
+  src:  url('./assets/fonts/GILROY-EXTRABOLD.TTF') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-LIGHTITALIC.TTF') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-BLACK.TTF') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-SEMIBOLD.TTF') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-BOLDITALIC.TTF') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-SEMIBOLDITALIC.TTF') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-BOLD.TTF') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GILROY';
+  src: url('./assets/fonts/GILROY-BLACKITALIC.TTF') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+}
+
+@layer base {
+  html {
+    font-family: "GILROY";
+  }
+  #app {
+    font-family: "GILROY";
+    @apply text-black bg-[#F2F5FA];
+  }
+  #app::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  .view-wrapper{
+    padding: 0 60px 70px;
+  }
+}

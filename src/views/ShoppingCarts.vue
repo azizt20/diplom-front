@@ -106,7 +106,9 @@
           <div class="mt-6">
             <button type="submit"
                     class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">
-              Checkout
+              <router-link class="w-full h-full" :to="{name:'checkout'}">
+                Checkout
+              </router-link>
             </button>
           </div>
         </section>
@@ -119,7 +121,7 @@
 import {CheckIcon, ClockIcon, QuestionMarkCircleIcon, XIcon} from '@heroicons/vue/solid'
 
 export default {
-  name: 'Shoping-cats',
+  name: 'Shopping-cats',
   components: {
     CheckIcon, ClockIcon, QuestionMarkCircleIcon, XIcon
   },

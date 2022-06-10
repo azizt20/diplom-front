@@ -1,10 +1,15 @@
 <template>
-$END$
+  <NavBar/>
+<router-view/>
 </template>
 
 <script>
+import NavBar from "@/components/NavBar";
 export default {
-name: "DefaultLayout"
+  name: "DefaultLayout",
+  components:{
+    NavBar
+  }
 }
 </script>
 
