@@ -15,8 +15,9 @@
 
           <div class="absolute bottom-0 inset-x-0 border-t overflow-x-auto sm:static sm:border-t-0 ">
             <div class="h-14 flex items-center px-4 space-x-8 sm:h-auto">
-              <a v-for="item in navigation" :key="item.name" :href="item.href"
-                 class="text-sm font-medium text-gray-700 hover:text-gray-800">{{ item.name }}</a>
+              <router-link :to="{name:'category', params:{cat: cat.id}}" v-for="cat in getCategory" :key="cat.id"
+                           class="text-sm font-medium text-gray-700 hover:text-gray-800">{{ cat.name }}
+              </router-link>
             </div>
           </div>
 
@@ -44,14 +45,14 @@
 
                   <form class="max-w-2xl mx-auto px-4">
                     <ul role="list" class="divide-y divide-gray-200">
-                      <li v-for="product in products" :key="product.id" class="py-6 flex items-center">
-                        <img :src="product.imageSrc" :alt="product.imageAlt"
+                      <li v-for="cart in getCartInfo" :key="cart.id" class="py-6 flex items-center">
+
+                        <img :src="STORAGE_URL+ cart.product.image" :alt="cart.imageAlt"
                              class="flex-none w-16 h-16 rounded-md border border-gray-200"/>
                         <div class="ml-4 flex-auto">
                           <h3 class="font-medium text-gray-900">
-                            <a :href="product.href">{{ product.name }}</a>
+                            <router-link :to="{name: 'detail', params: {productId:cart.product.id }}">{{ cart.product.name }}</router-link>
                           </h3>
-                          <p class="text-gray-500">{{ product.color }}</p>
                         </div>
                       </li>
                     </ul>
@@ -81,6 +82,19 @@
 <script>
 import {SearchIcon, ShoppingBagIcon} from '@heroicons/vue/outline'
 import {Popover, PopoverButton, PopoverPanel} from '@headlessui/vue'
+import {createNamespacedHelpers} from "vuex";
+
+
+const {
+  mapActions: mapProdActions,
+  mapGetters: mapProdGetters,
+
+} = createNamespacedHelpers('products')
+const {
+  mapActions: mapOrderActions,
+  mapGetters: mapOrderGetters,
+
+} = createNamespacedHelpers('order')
 
 export default {
   name: 'NavBar',
@@ -89,49 +103,28 @@ export default {
   },
   data() {
     return {
-      navigation: [
-        {name: 'Women', href: '#'},
-        {name: 'Men', href: '#'},
-        {name: 'Company', href: '#'},
-        {name: 'Stores', href: '#'},
-      ],
-      products: [
-        {
-          id: 1,
-          name: 'Throwback Hip Bag',
-          href: '#',
-          color: 'Salmon',
-          imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-          imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-        },
-        {
-          id: 2,
-          name: 'Medium Stuff Satchel',
-          href: '#',
-          color: 'Blue',
-          imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-          imageAlt:
-              'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-        },
-        {
-          id: 1,
-          name: 'Throwback Hip Bag',
-          href: '#',
-          color: 'Salmon',
-          imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-          imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-        },
-        {
-          id: 2,
-          name: 'Medium Stuff Satchel',
-          href: '#',
-          color: 'Blue',
-          imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-          imageAlt:
-              'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-        },
-      ]
+      STORAGE_URL: process.env.VUE_APP_STORAGE_URL,
     }
+  },
+  methods: {
+    ...mapProdActions({
+      getCategories: 'getCategories'
+    }),
+    ...mapOrderActions({
+      getCart: 'getCart'
+    })
+  },
+  created() {
+    this.getCategories()
+    this.getCart()
+  },
+  computed: {
+    ...mapProdGetters({
+      getCategory: 'getCategory'
+    }),
+    ...mapOrderGetters({
+      getCartInfo: 'getCartInfo'
+    })
   }
 }
 

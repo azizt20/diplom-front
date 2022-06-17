@@ -7,9 +7,9 @@
           <h2 id="cart-heading" class="sr-only">Items in your shopping cart</h2>
 
           <ul role="list" class="border-t border-b border-gray-200 divide-y divide-gray-200">
-            <li v-for="(product, productIdx) in products" :key="product.id" class="flex py-6 sm:py-10">
+            <li v-for="(product, productIdx) in getCartInfo" :key="product.id" class="flex py-6 sm:py-10">
               <div class="flex-shrink-0">
-                <img :src="product.imageSrc" :alt="product.imageAlt"
+                <img :src="STORAGE_URL + product.product.image" :alt="product.product.title"
                      class="w-24 h-24 rounded-md object-center object-cover sm:w-48 sm:h-48"/>
               </div>
 
@@ -17,26 +17,27 @@
                 <div class="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
                   <div>
                     <div class="flex justify-between">
-                      <h3 class="text-sm">
-                        <a :href="product.href" class="font-medium text-gray-700 hover:text-gray-800">
-                          {{ product.name }}
-                        </a>
+                      <h3 class="text-lg">
+                        <router-link :to="{name:'detail', params:{productId: product.product.id}}"
+                                     class="font-medium text-gray-700 hover:text-gray-800">
+                          {{ product.product.name }}
+                        </router-link>
                       </h3>
                     </div>
-                    <div class="mt-1 flex text-sm">
+                    <div class="mt-1 flex text-md">
                       <p class="text-gray-500">
-                        {{ product.color }}
+                        Sienna
                       </p>
-                      <p v-if="product.size" class="ml-4 pl-4 border-l border-gray-200 text-gray-500">
-                        {{ product.size }}
+                      <p class="ml-4 pl-4 border-l border-gray-200 text-gray-500">
+                        adsadasdas
                       </p>
                     </div>
-                    <p class="mt-1 text-sm font-medium text-gray-900">{{ product.price }}</p>
+                    <p class="mt-1 text-md font-medium text-gray-900">{{ product.product.cost }} сум</p>
                   </div>
 
                   <div class="mt-4 sm:mt-0 sm:pr-9">
                     <label :for="`quantity-${productIdx}`" class="sr-only">Quantity, {{ product.name }}</label>
-                    <select :id="`quantity-${productIdx}`" :name="`quantity-${productIdx}`"
+                    <select @change="ChangeAmount({id:product.id, amount: `quantity-${productIdx}`})" :id="`quantity-${productIdx}`" :value="product.amount" :name="`quantity-${productIdx}`"
                             class="max-w-full rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -49,7 +50,8 @@
                     </select>
 
                     <div class="absolute top-0 right-0">
-                      <button type="button" class="-m-2 p-2 inline-flex text-gray-400 hover:text-gray-500">
+                      <button @click.prevent="deleteCart({id: `${product.id}`})" type="button"
+                              class="-m-2 p-2 inline-flex text-gray-400 hover:text-gray-500">
                         <span class="sr-only">Remove</span>
                         <XIcon class="h-5 w-5" aria-hidden="true"/>
                       </button>
@@ -58,9 +60,9 @@
                 </div>
 
                 <p class="mt-4 flex text-sm text-gray-700 space-x-2">
-                  <CheckIcon v-if="product.inStock" class="flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true"/>
+                  <CheckIcon v-if="product.product.discount" class="flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true"/>
                   <ClockIcon v-else class="flex-shrink-0 h-5 w-5 text-gray-300" aria-hidden="true"/>
-                  <span>{{ product.inStock ? 'In stock' : `Ships in ${product.leadTime}` }}</span>
+                  <span>{{ product.product.discount ? 'Есть в наличии' : `Временно не доступен` }}</span>
                 </p>
               </div>
             </li>
@@ -120,6 +122,20 @@
 <script>
 import {CheckIcon, ClockIcon, QuestionMarkCircleIcon, XIcon} from '@heroicons/vue/solid'
 
+import {createNamespacedHelpers} from "vuex";
+
+
+// const {
+//   mapActions: mapProdActions,
+//   mapGetters: mapProdGetters,
+//
+// } = createNamespacedHelpers('products')
+const {
+  mapActions: mapOrderActions,
+  mapGetters: mapOrderGetters,
+
+} = createNamespacedHelpers('order')
+
 export default {
   name: 'Shopping-cats',
   components: {
@@ -127,6 +143,7 @@ export default {
   },
   data() {
     return {
+      STORAGE_URL: process.env.VUE_APP_STORAGE_URL,
       products: [
         {
           id: 1,
@@ -163,6 +180,31 @@ export default {
         },
       ]
     }
+  },
+  methods: {
+    ...mapOrderActions({
+      deleteCart: 'deleteCart',
+      putCart: 'putCart',
+    }),
+    ChangeAmount(data){
+      let a = document.getElementById(data.amount)
+      this.putCart({
+        id: data.id,
+        amount: a.value
+      })
+    }
+  },
+  computed: {
+    ...mapOrderGetters({
+      getCartInfo: 'getCartInfo'
+    })
   }
 }
 </script>
+
+
+<style scoped lang="scss">
+select {
+  padding: 6px 20px 6px 12px;
+}
+</style>

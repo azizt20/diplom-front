@@ -1,50 +1,44 @@
-<!--
-  This example requires Tailwind CSS v2.0+
-
-  This example requires some changes to your config:
-
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/aspect-ratio'),
-    ],
-  }
-  ```
--->
 <template>
-  <div class="bg-white">
+  <div class="bg-white" v-if="getOneProduct">
     <div class="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:gap-x-8">
-      <!-- Product details -->
+      <!--      Product details-->
       <div class="lg:max-w-lg lg:self-end">
         <nav aria-label="Breadcrumb">
           <ol role="list" class="flex items-center space-x-2">
-            <li v-for="(breadcrumb, breadcrumbIdx) in product.breadcrumbs" :key="breadcrumb.id">
+<!--            <li>-->
+<!--              <div class="flex items-center text-sm">-->
+<!--                <router-link-->
+<!--                    :to="{name:'category', params:{cat:getCatBySub.id}}"-->
+<!--                    class="font-medium text-gray-500 hover:text-gray-900">-->
+<!--                  {{ getCatBySub.name }}-->
+<!--                </router-link>-->
+<!--                <svg viewBox="0 0 20 20"-->
+<!--                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true"-->
+<!--                     class="ml-2 flex-shrink-0 h-5 w-5 text-gray-300">-->
+<!--                  <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z"/>-->
+<!--                </svg>-->
+<!--              </div>-->
+<!--            </li>-->
+            <li>
               <div class="flex items-center text-sm">
-                <a :href="breadcrumb.href" class="font-medium text-gray-500 hover:text-gray-900">
-                  {{ breadcrumb.name }}
-                </a>
-                <svg v-if="breadcrumbIdx !== product.breadcrumbs.length - 1" viewBox="0 0 20 20"
-                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true"
-                     class="ml-2 flex-shrink-0 h-5 w-5 text-gray-300">
-                  <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z"/>
-                </svg>
+                <router-link :to="{name:'subcategory', params:{sub: getSubCat.id}}"
+                             class="font-medium text-gray-500 hover:text-gray-900">
+                  {{ getSubCat?.name }}
+                </router-link>
               </div>
             </li>
           </ol>
         </nav>
 
         <div class="mt-4">
-          <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">{{ product.name }}</h1>
+          <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">{{ getOneProduct.name }}</h1>
         </div>
 
         <section aria-labelledby="information-heading" class="mt-4">
           <h2 id="information-heading" class="sr-only">Product information</h2>
 
           <div class="flex items-center">
-            <p class="text-lg text-gray-900 sm:text-xl">{{ product.price }}</p>
+            <p class="text-lg text-gray-900 sm:text-xl">{{ getOneProduct.cost }} сум</p>
 
             <div class="ml-4 pl-4 border-l border-gray-300">
               <h2 class="sr-only">Reviews</h2>
@@ -52,23 +46,23 @@
                 <div>
                   <div class="flex items-center">
                     <StarIcon v-for="rating in [0, 1, 2, 3, 4]" :key="rating"
-                              :class="[reviews.average > rating ? 'text-yellow-400' : 'text-gray-300', 'h-5 w-5 flex-shrink-0']"
+                              :class="[getOneProduct.weight > rating ? 'text-yellow-400' : 'text-gray-300', 'h-5 w-5 flex-shrink-0']"
                               aria-hidden="true"/>
                   </div>
-                  <p class="sr-only">{{ reviews.average }} out of 5 stars</p>
+                  <p class="sr-only">{{ getOneProduct.weight }} out of 5 stars</p>
                 </div>
-                <p class="ml-2 text-sm text-gray-500">{{ reviews.totalCount }} reviews</p>
+                <p class="ml-2 text-sm text-gray-500">{{ getOneProduct.review }} reviews</p>
               </div>
             </div>
           </div>
 
           <div class="mt-4 space-y-6">
-            <p class="text-base text-gray-500">{{ product.description }}</p>
+            <p class="text-base text-gray-500">{{ getOneProduct.description }}</p>
           </div>
 
           <div class="mt-6 flex items-center">
             <CheckIcon class="flex-shrink-0 w-5 h-5 text-green-500" aria-hidden="true"/>
-            <p class="ml-2 text-sm text-gray-500">In stock and ready to ship</p>
+            <p class="ml-2 text-sm text-gray-500">В наличии и готов к отправке </p>
           </div>
         </section>
       </div>
@@ -76,7 +70,7 @@
       <!-- Product image -->
       <div class="mt-10 lg:mt-0 lg:col-start-2 lg:row-span-2 lg:self-center">
         <div class="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden">
-          <img :src="product.imageSrc" :alt="product.imageAlt" class="w-full h-full object-center object-cover"/>
+          <img :src="STORAGE_URL + getOneProduct.image" :alt="getOneProduct.title" class="w-full h-full object-center object-cover"/>
         </div>
       </div>
 
@@ -86,28 +80,20 @@
           <h2 id="options-heading" class="sr-only">Product options</h2>
 
           <form>
-            <div class="sm:flex sm:justify-between">
-              <!-- Size selector -->
-              <RadioGroup>
-                <RadioGroupLabel class="block text-sm font-medium text-gray-700"> Size</RadioGroupLabel>
-                <div class="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <RadioGroupOption as="template" v-for="size in product.sizes" :key="size.name" :value="size"
-                                    v-slot="{ active, checked }">
-                    <div
-                        :class="[active ? 'ring-2 ring-indigo-500' : '', 'relative block border border-gray-300 rounded-lg p-4 cursor-pointer focus:outline-none']">
-                      <RadioGroupLabel as="p" class="text-base font-medium text-gray-900">
-                        {{ size.name }}
-                      </RadioGroupLabel>
-                      <RadioGroupDescription as="p" class="mt-1 text-sm text-gray-500">
-                        {{ size.description }}
-                      </RadioGroupDescription>
-                      <div
-                          :class="[active ? 'border' : 'border-2', checked ? 'border-indigo-500' : 'border-transparent', 'absolute -inset-px rounded-lg pointer-events-none']"
-                          aria-hidden="true"/>
-                    </div>
-                  </RadioGroupOption>
-                </div>
-              </RadioGroup>
+            <div class="mt-8 border-t border-gray-200 pt-8">
+              <h2 class="text-sm font-medium text-gray-900">Fabric &amp; Care</h2>
+
+              <div class="mt-4 prose prose-sm text-gray-500">
+                <ul role="list">
+                  <li>Only the best materials</li>
+
+                  <li>Ethically and locally made</li>
+
+                  <li>Pre-washed and pre-shrunk</li>
+
+                  <li>Machine wash cold with similar colors</li>
+                </ul>
+              </div>
             </div>
             <div class="mt-4">
               <a href="#" class="group inline-flex text-sm text-gray-500 hover:text-gray-700">
@@ -120,9 +106,9 @@
               <button type="submit"
                       class="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">
 
-                <router-link class="w-full h-full" :to="{name:'cart'}">
+                <button class="w-full h-full" @click.prevent="addToCart({product: getOneProduct.id})">
                   Add to bag
-                </router-link>
+                </button>
 
               </button>
             </div>
@@ -142,24 +128,31 @@
 
 <script>
 import {CheckIcon, QuestionMarkCircleIcon, StarIcon} from '@heroicons/vue/solid'
-import {RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption} from '@headlessui/vue'
 import {ShieldCheckIcon} from '@heroicons/vue/outline'
+
+import {createNamespacedHelpers} from "vuex";
+
+const {
+  mapActions: mapProdActions,
+  mapGetters: mapProdGetters,
+} = createNamespacedHelpers('products')
+const {
+  mapActions: mapOrderActions,
+} = createNamespacedHelpers('order')
 
 export default {
   name: 'DetailPage',
   components: {
     ShieldCheckIcon,
-    RadioGroup,
-    RadioGroupDescription,
-    RadioGroupLabel,
-    RadioGroupOption,
     CheckIcon,
     QuestionMarkCircleIcon,
     StarIcon
   },
   data() {
     return {
-      product : {
+      STORAGE_URL: process.env.VUE_APP_STORAGE_URL,
+
+      product: {
         name: 'Everyday Ruck Snack',
         href: '#',
         price: '$220',
@@ -177,9 +170,29 @@ export default {
           {name: '30L', description: 'Enough room for a serious amount of snacks.'},
         ],
       },
-      reviews : {average: 4, totalCount: 1624},
-
+      reviews: {average: 4, totalCount: 1624},
     }
+  },
+  methods: {
+    ...mapProdActions({
+      getProducts: 'getProducts',
+    }),
+    ...mapOrderActions({
+      addToCart: 'addToCart',
+    })
+
+  },
+  created() {
+    const prod_id = this.$route.params.productId
+    this.getProducts(prod_id)
+  },
+  computed: {
+    ...mapProdGetters({
+      getOneProduct: 'getOneProduct',
+      getSubCat: 'getSubCat',
+      getCatBySub: 'getCatBySub'
+    })
   }
+
 }
 </script>

@@ -15,7 +15,7 @@
   ```
 -->
 <template>
-  <div class="bg-gray-50">
+  <div class="bg-lavender">
     <div class="max-w-2xl mx-auto pt-16 pb-24 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <h2 class="sr-only">Checkout</h2>
 
@@ -345,3 +345,9 @@ export default {
 }
 
 </script>
+
+<style scoped lang="scss">
+input,select{
+  height: 50px;
+}
+</style>

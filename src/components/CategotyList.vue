@@ -62,6 +62,7 @@ export default {
         { name: 'Sale', href: '#', imageSrc: 'https://tailwindui.com/img/ecommerce-images/home-page-01-category-03.jpg' },
       ]
     }
-  }
+  },
+
 }
 </script>
